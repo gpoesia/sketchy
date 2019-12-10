@@ -8,9 +8,11 @@ class NT(Enum):
     ASSERTION = auto()  # [BOOLEXPR]
     IF = auto()         # [BoolExpr, STMTLIST, STMTLIST?]
     FOR = auto()        # [Name, BVLit, BVLit, STMTLIST]
-    BVEXPR = auto()     # [BVOp2, BVEXPR, BVEXPR] + [BVOp1, BVEXPR] + [Name] + [BVLit]
-    BOOLEXPR = auto()   # [BoolOp1, BOOLEXPR] + [BoolOp2, BOOLEXPR, BOOLEXPR] + [BVComp, BOOLEXPR, BOOLEXPR]
-    PHI = auto()        # [Name, BoolExpr, BVEXPR, BVEXPR]
+    BVEXPR = auto()     # [BVOp2, BVEXPR, BVEXPR] + [BVOp1, BVEXPR] + [Name] + [BVLit] + [BVHOLE] 
+    BOOLEXPR = auto()   # [BoolOp1, BOOLEXPR] + [BoolOp2, BOOLEXPR, BOOLEXPR] + [BVComp, BOOLEXPR, BOOLEXPR] + [BOOLHOLE]
+    BVHOLE = auto()     # [Num]
+    BOOLHOLE = auto()   # [Num]
+    PHI = auto()        # [Name, BoolExpr, Name, Name]
 
 class Node(object):
     def __init__(self, kind, args):
@@ -106,7 +108,7 @@ class ASTPrinter(Visitor):
                         ") { " +
                         self.str_repr[node.args[3]] +
                         " }")
-            if (node.kind == NT.BVEXPR   ):
+            if (node.kind == NT.BVEXPR):
                 if (isinstance(node.args[0], Name) or 
                         isinstance(node.args[0], BVLit)):
                     self.str_repr[node] = self.str_repr[node.args[0]]
@@ -122,12 +124,16 @@ class ASTPrinter(Visitor):
                         self.str_repr[node.args[1]] + 
                         " " +
                         self.str_repr[node.args[2]])
+                elif isinstance(node.args[0], Node) and node.args[0].kind == NT.BVHOLE:
+                    self.str_repr[node] = self.str_repr[node.args[0]] 
             if (node.kind == NT.BOOLEXPR ):
                 if isinstance(node.args[0], BoolOp1):
                     self.str_repr[node] = (
                         self.str_repr[node.args[0]] + 
                         " " +
                         self.str_repr[node.args[1]])
+                elif isinstance(node.args[0], Node) and node.args[0].kind == NT.BOOLHOLE:
+                    self.str_repr[node] = self.str_repr[node.args[0]]
                 else:
                     self.str_repr[node] = (
                         self.str_repr[node.args[0]] + 
@@ -143,12 +149,23 @@ class ASTPrinter(Visitor):
                         ", " +
                         self.str_repr[node.args[2]] +
                         ")")
+            if (node.kind == NT.BVHOLE ):
+                self.str_repr[node] = "?"+str(node.args[0])+"?"  
+            if (node.kind == NT.BOOLHOLE ):
+                self.str_repr[node] = "?"+str(node.args[0])+"?"  
         elif isinstance(node, Name):
             self.str_repr[node] = node.name
         elif isinstance(node, BVLit):
             self.str_repr[node] = str(node.bvlit)
         else:
             self.str_repr[node] = str(node)
+
+#class ASTToConstraints(Visitor):
+#    def __init__(self):
+#        self.constraint_str = {}
+#    def visit(self, node, is_leaving):
+#
+
 
 class ASTConcretizer(Visitor):
     def __init__(self, name, val):
@@ -162,7 +179,7 @@ class ASTConcretizer(Visitor):
             self.modified_node[node] = self.val
         else:
             self.modified_node[node] = node
-
+ 
 class ASTUnroller(Visitor):
     def __init__(self):
         self.unrolled_node = {}
@@ -194,7 +211,7 @@ def walk(ast, v):
 a = Node(NT.FUNCTION, (Node(NT.PARAMLIST, [Name("a"), Name("b")]), 
                   Node(NT.STMTLIST, [
                       Node(NT.ASSIGNMENT, (Name("a"), 
-                          Node(NT.BVEXPR, [Name("b")]))),
+                          Node(NT.BVEXPR, [Node(NT.BVHOLE, [1])]))),
                       Node(NT.ASSIGNMENT, [
                           Name("b"), 
                           Node(NT.BVEXPR, [
@@ -204,41 +221,42 @@ a = Node(NT.FUNCTION, (Node(NT.PARAMLIST, [Name("a"), Name("b")]),
                               ])])])))
 
 
+
 # test 
-#p = ASTPrinter()
-#walk(a, p)
-#print(p.str_repr[a])
-#
-#conc = ASTConcretizer("c", BVLit(3))
-#walk(a, conc)
-#n = conc.modified_node[a]
-#
-#p2 = ASTPrinter()
-#walk(n, p2)
-#print(p2.str_repr[n])
-
-
-
-
-b = Node(NT.FUNCTION, [Node(NT.PARAMLIST, [Name("a")]),
-                       Node(NT.STMTLIST, [
-                                Node(NT.ASSIGNMENT, [Name("b"), BVLit(10)]),
-                                Node(NT.FOR, 
-                                    [Name("c"), BVLit(1), BVLit(4), 
-                                        Node(NT.STMTLIST, 
-                                            [Node(NT.ASSIGNMENT, 
-                                             [Name("b"), Node(NT.BVEXPR, 
-                                                            [Name("c")])])])])
-                           ])])
-
 p = ASTPrinter()
-walk(b, p)
-print(p.str_repr[b])
+walk(a, p)
+print(p.str_repr[a])
 
-unr = ASTUnroller()
-walk(b, unr)
-walk(unr.unrolled_node[b], p)
-print(p.str_repr[unr.unrolled_node[b]])
+conc = ASTConcretizer("c", BVLit(3))
+walk(a, conc)
+n = conc.modified_node[a]
+
+p2 = ASTPrinter()
+walk(n, p2)
+print(p2.str_repr[n])
+
+
+
+
+#b = Node(NT.FUNCTION, [Node(NT.PARAMLIST, [Name("a")]),
+#                       Node(NT.STMTLIST, [
+#                                Node(NT.ASSIGNMENT, [Name("b"), BVLit(10)]),
+#                                Node(NT.FOR, 
+#                                    [Name("c"), BVLit(1), BVLit(4), 
+#                                        Node(NT.STMTLIST, 
+#                                            [Node(NT.ASSIGNMENT, 
+#                                             [Name("b"), Node(NT.BVEXPR, 
+#                                                            [Name("c")])])])])
+#                           ])])
+#
+#p = ASTPrinter()
+#walk(b, p)
+#print(p.str_repr[b])
+#
+#unr = ASTUnroller()
+#walk(b, unr)
+#walk(unr.unrolled_node[b], p)
+#print(p.str_repr[unr.unrolled_node[b]])
 
 
 
