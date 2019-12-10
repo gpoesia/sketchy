@@ -19,7 +19,16 @@ class SSAVisitor(Visitor):
 
     def visit(self, node, is_leaving):
         if isinstance(node, Node) and not is_leaving:
-            self.prev_definition[node] = dict(self.definition_counter)
+            if node.kind == NT.IF:
+                self.prev_definition[node] = dict(self.definition_counter)
+                self.prev_definition[node.args[1]] = self.prev_definition[node]
+
+                if len(node.args) == 3:
+                    self.prev_definition[node.args[2]] = self.prev_definition[node]
+            # The if branches have their prev_definition set by the parent,
+            # so they don't redefine it here.
+            elif node not in self.prev_definition:
+                self.prev_definition[node] = dict(self.definition_counter)
         elif isinstance(node, Node) and is_leaving:
             if node.kind == NT.IF:
                 pass
