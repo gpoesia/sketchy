@@ -160,12 +160,6 @@ class ASTPrinter(Visitor):
         else:
             self.str_repr[node] = str(node)
 
-#class ASTToConstraints(Visitor):
-#    def __init__(self):
-#        self.constraint_str = {}
-#    def visit(self, node, is_leaving):
-#
-
 
 class ASTConcretizer(Visitor):
     def __init__(self, name, val):
@@ -257,6 +251,5 @@ print(p2.str_repr[n])
 #walk(b, unr)
 #walk(unr.unrolled_node[b], p)
 #print(p.str_repr[unr.unrolled_node[b]])
-
 
 
