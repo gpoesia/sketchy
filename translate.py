@@ -148,6 +148,8 @@ class ASTPrinter(Visitor):
                         self.str_repr[node.args[1]] +
                         ", " +
                         self.str_repr[node.args[2]] +
+                        ", " +
+                        self.str_repr[node.args[3]] +
                         ")")
             if (node.kind == NT.BVHOLE ):
                 self.str_repr[node] = "?"+str(node.args[0])+"?"

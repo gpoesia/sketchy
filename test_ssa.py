@@ -1,7 +1,7 @@
 from ssa import *
 from examples import *
 
-EXAMPLE = IF_TRUE
+EXAMPLE = IF_TRUE_ELSE_NOTHING
 
 ssa_visitor = SSAVisitor()
 walk(EXAMPLE, ssa_visitor)
