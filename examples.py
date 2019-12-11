@@ -63,6 +63,28 @@ IF_TRUE = Node(NT.FUNCTION, [
     ]),
 ])
 
+IF_TRUE_ELSE_NOTHING = Node(NT.FUNCTION, [
+    Node(NT.PARAMLIST, [Name("x"), Name("y")]),
+    Node(NT.STMTLIST, [
+        Node(NT.IF, [
+            Node(NT.BOOLEXPR, [Node(NT.BOOLHOLE, [0])]),
+            Node(NT.STMTLIST, [
+                Node(NT.ASSIGNMENT, [Name("x"), Node(NT.BVEXPR, [Name("y")])]),
+            ]),
+            Node(NT.STMTLIST, [
+                Node(NT.ASSIGNMENT, [Name("x"), Node(NT.BVEXPR, [Name("x")])]),
+            ]),
+        ]),
+        Node(NT.ASSERTION, [
+            Node(NT.BOOLEXPR, [
+                BVComp.BVEQ,
+                Node(NT.BVEXPR, [Name("x")]),
+                Node(NT.BVEXPR, [Name("y")]),
+                ]),
+        ]),
+    ]),
+])
+
 IF_FALSE = Node(NT.FUNCTION, [
     Node(NT.PARAMLIST, [Name("x"), Name("y")]),
     Node(NT.STMTLIST, [

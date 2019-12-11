@@ -32,7 +32,48 @@ class SSAVisitor(Visitor):
                 self.prev_definition[node] = dict(self.definition_counter)
         elif isinstance(node, Node) and is_leaving:
             if node.kind == NT.IF:
-                pass
+                then_stmts = self.ssa_node[node.args[1]].args
+                has_else = len(node.args) == 3
+
+                if has_else:
+                    else_stmt = self.ssa_node[node.args[2]]
+
+                    for name, last_name in self.last_definition[node.args[1]].items():
+                        c = ASTConcretizer(last_name,
+                                Name(
+                                    self.format_name(name,
+                                        self.prev_definition[node][name] - 1)))
+                        walk(else_stmt, c)
+                        else_stmt = c.modified_node[else_stmt]
+
+                else_stmts = else_stmt.args if has_else else []
+
+                assigned_variables = set(self.last_definition[node.args[1]].keys())
+                if has_else:
+                    assigned_variables.update(self.last_definition[node.args[2]].keys())
+
+                phis = []
+
+                for v in assigned_variables:
+                    then_name = (self.last_definition[node.args[1]].get(v) or
+                                 self.format_name(v, self.prev_definition[node][v]))
+                    else_name = ((has_else and self.last_definition[node.args[2]].get(v)) or
+                                 self.format_name(v, self.prev_definition[node][v] - 1))
+
+                    phi_name = self.format_name(v, self.definition_counter[v])
+
+                    phis.append(Node(NT.PHI, [
+                        Name(phi_name),
+                        node.args[0],
+                        then_name,
+                        else_name,
+                    ]))
+
+                    self.definition_counter[v] += 1
+                    self.last_definition[node][v] = phi_name
+
+                self.ssa_node[node] = Node(NT.STMTLIST, then_stmts + else_stmts + phis)
+
             elif node.kind == NT.ASSIGNMENT:
                 new_name = self.format_name(
                             node.args[0].name,
@@ -43,14 +84,14 @@ class SSAVisitor(Visitor):
                     self.ssa_node[node.args[1]]
                     ])
 
-                self.last_definition[node.args[0].name] = new_name
+                self.last_definition[node][node.args[0].name] = new_name
                 self.definition_counter[node.args[0].name] += 1
             elif node.kind == NT.PARAMLIST:
                 names = []
                 for name in node.args:
-                    self.last_definition[name.name] = self.format_name(name.name, 0)
+                    self.last_definition[node][name.name] = self.format_name(name.name, 0)
                     self.definition_counter[name.name] = 1
-                    names.append(Name(self.last_definition[name.name]))
+                    names.append(Name(self.last_definition[node][name.name]))
                 self.ssa_node[node] = Node(NT.PARAMLIST, names)
             else:
                 children = []
@@ -62,6 +103,8 @@ class SSAVisitor(Visitor):
 
                 self.ssa_node[node] = Node(node.kind, children)
         elif isinstance(node, Name):
-            self.ssa_node[node] = Name(self.last_definition[node.name])
+            self.ssa_node[node] = Name(self.format_name(
+                node.name,
+                self.definition_counter[node.name] - 1))
         else:
             self.ssa_node[node] = node
