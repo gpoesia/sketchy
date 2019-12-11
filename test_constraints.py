@@ -12,4 +12,4 @@ print(print_visitor.str_repr[linear_combo_ssa_node])
 
 constraint_visitor = ConstraintVisitor()
 walk(linear_combo_ssa_node, constraint_visitor)
-print(constraint_visitor.constraint_str[LINEAR_COMBINATION])
+c = constraint_visitor.constraint_str[linear_combo_ssa_node]
