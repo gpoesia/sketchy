@@ -2,6 +2,7 @@
 
 import collections
 from translate import *
+from examples import *
 
 class SSAVisitor(Visitor):
     def __init__(self):
