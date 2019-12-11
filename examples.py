@@ -51,7 +51,7 @@ linear_combo_ssa_node = ssa_visitor.ssa_node[LINEAR_COMBINATION]
 
 print_visitor = ASTPrinter()
 walk(linear_combo_ssa_node, print_visitor)
-print(p.str_repr[ssa_visitor.ssa_node[LINEAR_COMBINATION]])
+print(print_visitor.str_repr[linear_combo_ssa_node])
 
 constraint_visitor = ConstraintVisitor()
 walk(linear_combo_ssa_node, constraint_visitor)
