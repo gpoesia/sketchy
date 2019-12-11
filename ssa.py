@@ -16,7 +16,7 @@ class SSAVisitor(Visitor):
         self.ssa_node = {}
 
     def format_name(self, name, definition_id):
-        return "{}__{}".format(name, definition_id)
+        return "{}_{}".format(name, definition_id)
 
     def visit(self, node, is_leaving):
         if isinstance(node, Node) and not is_leaving:
