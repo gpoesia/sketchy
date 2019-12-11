@@ -2,6 +2,7 @@
 
 import collections
 from translate import *
+from examples import LINEAR_COMBINATION
 
 class SSAVisitor(Visitor):
     def __init__(self):
@@ -65,29 +66,8 @@ class SSAVisitor(Visitor):
         else:
             self.ssa_node[node] = node
 
-a = Node(NT.FUNCTION, [
-    Node(NT.PARAMLIST, [Name("x"), Name("y")]),
-    Node(NT.STMTLIST, [
-        Node(NT.ASSIGNMENT, [Name("x"), Node(NT.BVEXPR, [
-            BVOp2.BVADD,
-            Node(NT.BVEXPR, [Name("x")]),
-            Node(NT.BVEXPR, [Name("x")]),
-            ])]),
-        Node(NT.ASSIGNMENT, [Name("x"), Node(NT.BVEXPR, [
-            BVOp2.BVADD,
-            Node(NT.BVEXPR, [Name("x")]),
-            Node(NT.BVEXPR, [Name("y")]),
-            ])]),
-        Node(NT.ASSIGNMENT, [Name("x"), Node(NT.BVEXPR, [
-            BVOp2.BVADD,
-            Node(NT.BVEXPR, [Name("x")]),
-            Node(NT.BVEXPR, [Name("x")]),
-            ])]),
-    ])
-])
-
 ssa_visitor = SSAVisitor()
-walk(a, ssa_visitor)
+walk(LINEAR_COMBINATION, ssa_visitor)
 p = ASTPrinter()
-walk(ssa_visitor.ssa_node[a], p)
-print(p.str_repr[ssa_visitor.ssa_node[a]])
+walk(ssa_visitor.ssa_node[LINEAR_COMBINATION], p)
+print(p.str_repr[ssa_visitor.ssa_node[LINEAR_COMBINATION]])
