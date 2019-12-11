@@ -2,7 +2,6 @@
 
 import collections
 from translate import *
-from examples import LINEAR_COMBINATION
 
 class SSAVisitor(Visitor):
     def __init__(self):
@@ -65,9 +64,3 @@ class SSAVisitor(Visitor):
             self.ssa_node[node] = Name(self.last_definition[node.name])
         else:
             self.ssa_node[node] = node
-
-ssa_visitor = SSAVisitor()
-walk(LINEAR_COMBINATION, ssa_visitor)
-p = ASTPrinter()
-walk(ssa_visitor.ssa_node[LINEAR_COMBINATION], p)
-print(p.str_repr[ssa_visitor.ssa_node[LINEAR_COMBINATION]])
