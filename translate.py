@@ -8,11 +8,11 @@ class NT(Enum):
     ASSERTION = auto()  # [BOOLEXPR]
     IF = auto()         # [BoolExpr, STMTLIST, STMTLIST?]
     FOR = auto()        # [Name, BVLit, BVLit, STMTLIST]
-    BVEXPR = auto()     # [BVOp2, BVEXPR, BVEXPR] + [BVOp1, BVEXPR] + [Name] + [BVLit] + [BVHOLE]
-    BOOLEXPR = auto()   # [BoolOp1, BOOLEXPR] + [BoolOp2, BOOLEXPR, BOOLEXPR] + [BVComp, BOOLEXPR, BOOLEXPR] + [BOOLHOLE]
+    BVEXPR = auto()     # [BVOp2, BVEXPR, BVEXPR] + [BVOp1, BVEXPR] + [Name] + [BVLit] + [BVHOLE] + [PHI]
+    BOOLEXPR = auto()   # [BoolOp1, BOOLEXPR] + [BoolOp2, BOOLEXPR, BOOLEXPR] + [BVComp, BOOLEXPR, BOOLEXPR] + [BOOLHOLE] + [PHI]
     BVHOLE = auto()     # [Num]
     BOOLHOLE = auto()   # [Num]
-    PHI = auto()        # [Name, BoolExpr, Name, Name]
+    PHI = auto()        # [BoolExpr, Name, Name]
 
 class Node(object):
     def __init__(self, kind, args):

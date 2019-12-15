@@ -1,4 +1,4 @@
-# AST transform that puts programs in SSA form
+#AST transform that puts programs in SSA form
 
 import collections
 from translate import *
@@ -62,11 +62,13 @@ class SSAVisitor(Visitor):
 
                     phi_name = self.format_name(v, self.definition_counter[v])
 
-                    phis.append(Node(NT.PHI, [
+                    phis.append(Node(NT.ASSIGNMENT, [
                         Name(phi_name),
-                        node.args[0],
-                        then_name,
-                        else_name,
+                        Node(NT.PHI, [
+                            node.args[0],
+                            then_name,
+                            else_name,
+                        ])
                     ]))
 
                     self.definition_counter[v] += 1
