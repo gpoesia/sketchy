@@ -15,7 +15,7 @@ class ConstraintVisitor(Visitor):
     def outputConstraints(self, node):
         return ("(set-logic UFBV)\n" +
                 self.createHoleConstraints() +
-                self.constraint_str[node] +"\n"+ 
+                self.constraint_str[node] +"\n"+
                 "(check-sat)\n" +
                 "(get-model)")
     def visit(self, node, is_leaving):
@@ -80,10 +80,10 @@ class ConstraintVisitor(Visitor):
                     self.constraint_str[node] = "hole_"+self.constraint_str[node.args[0]]
             elif (node.kind == NT.PHI):
                 self.constraint_str[node] = (
-                    "ite "+
+                    "(ite "+
                     self.constraint_str[node.args[0]]+" "+
-                    self.constraint_str[node.args[1]]+" "+
-                    self.constraint_str[node.args[2]])
+                    node.args[1]+" "+
+                    node.args[2]+")")
             elif (node.kind == NT.BVHOLE):
                 hole_name = "hole_"+str(node.args[0])
                 self.constraint_str[node] = hole_name
