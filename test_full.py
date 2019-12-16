@@ -4,7 +4,7 @@ from constraints import *
 from examples import *
 import subprocess
 
-for EXAMPLE in [IF_TRUE_ELSE_NOTHING]: #[LINEAR_COMBINATION, IF_TRUE, IF_FALSE, IF_TRUE_ELSE_NOTHING]:
+for EXAMPLE in [LINEAR_COMBINATION, IF_TRUE, IF_FALSE, IF_TRUE_ELSE_NOTHING]:
     ssa_node = ssa(EXAMPLE)
     # print_visitor_2 = ASTPrinter()
     # walk(ssa_node, print_visitor_2)
