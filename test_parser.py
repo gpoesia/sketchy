@@ -17,7 +17,7 @@ LINEAR_COMBINATION_PROGRAM = """
         x := + x y;
         x := + x y;
         x := + x y;
-        z := + * x_old ?0n * y ?1n;
+        z := + (* x_old ?0n) (((* y ?1n)));
         assert == x z;
     }
 """
