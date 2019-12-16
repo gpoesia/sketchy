@@ -191,6 +191,11 @@ class ASTPrinter(Visitor):
         else:
             self.str_repr[node] = str(node)
 
+def print_node(node):
+    p = ASTPrinter()
+    walk(node, p)
+    print(p.str_repr[node])
+
 
 class ASTConcretizer(Visitor):
     def __init__(self, name, val):

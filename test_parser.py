@@ -17,10 +17,11 @@ LINEAR_COMBINATION_PROGRAM = """
         x := + x y;
         x := + x y;
         x := + x y;
-        z := + (* x_old ?0n) (* y ?1n);
-        assert = x z;
+        z := + * x_old ?0n * y ?1n;
+        assert == x z;
     }
 """
 
-print(Tokenizer.tokenize(LINEAR_COMBINATION_PROGRAM))
+#print(Tokenizer.tokenize(LINEAR_COMBINATION_PROGRAM))
 print(Parser.parse_string(LINEAR_COMBINATION_PROGRAM))
+print_node(Parser.parse_string(LINEAR_COMBINATION_PROGRAM))
