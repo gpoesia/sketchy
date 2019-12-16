@@ -28,12 +28,13 @@ class ConstraintVisitor(Visitor):
             elif (node.kind == NT.PARAMLIST):
                 self.constraint_str[node] = "\n".join(["("+x.name+" (_ BitVec 32))" for x in node.args])
             elif (node.kind == NT.STMTLIST): #STMTLIST = [(ASSIGNMENT + ASSERTION)]
-                # problem is that assigment and assertion have different parenthesizations
+                print('statements', node.args)
                 self.constraint_str[node] = (
                     "\n"+"\n".join([self.constraint_str[x] for x in node.args])
                         + ')'*len(list(filter(lambda x:x.kind == NT.ASSIGNMENT, node.args)))
                     )
             elif (node.kind == NT.ASSIGNMENT):
+                print(node.kind, node.args[0].name, node.args)
                 self.constraint_str[node] = (
                         "(let (("+
                         node.args[0].name+" "+
@@ -56,7 +57,7 @@ class ConstraintVisitor(Visitor):
                         "(" + operation_symbol + " " +
                         self.constraint_str[node.args[1]] + " " +
                         self.constraint_str[node.args[2]] + ")")
-                elif isinstance(node.args[0], Node) and node.args[0].kind == NT.BVHOLE:
+                elif isinstance(node.args[0], Node):
                     self.constraint_str[node] = self.constraint_str[node.args[0]]
             elif (node.kind == NT.BOOLEXPR ):
                 if isinstance(node.args[0], BoolOp1):
@@ -76,7 +77,7 @@ class ConstraintVisitor(Visitor):
                         "("+operation_symbol + " " +
                         self.constraint_str[node.args[1]] + " " +
                         self.constraint_str[node.args[2]]+")")
-                elif isinstance(node.args[0], Node) and node.args[0].kind == NT.BOOLHOLE:
+                elif isinstance(node.args[0], Node):
                     self.constraint_str[node] = self.constraint_str[node.args[0]]
             elif (node.kind == NT.PHI):
                 self.constraint_str[node] = (
