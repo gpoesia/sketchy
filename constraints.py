@@ -28,13 +28,11 @@ class ConstraintVisitor(Visitor):
             elif (node.kind == NT.PARAMLIST):
                 self.constraint_str[node] = "\n".join(["("+x.name+" (_ BitVec 32))" for x in node.args])
             elif (node.kind == NT.STMTLIST): #STMTLIST = [(ASSIGNMENT + ASSERTION)]
-                print('statements', node.args)
                 self.constraint_str[node] = (
                     "\n"+"\n".join([self.constraint_str[x] for x in node.args])
                         + ')'*len(list(filter(lambda x:x.kind == NT.ASSIGNMENT, node.args)))
                     )
             elif (node.kind == NT.ASSIGNMENT):
-                print(node.kind, node.args[0].name, node.args)
                 self.constraint_str[node] = (
                         "(let (("+
                         node.args[0].name+" "+

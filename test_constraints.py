@@ -5,17 +5,12 @@ from constraints import *
 from examples import *
 import subprocess
 
-#print_visitor_1 = ASTPrinter()
-#walk(IF_TRUE, print_visitor_1)
-#print(print_visitor_1.str_repr[IF_TRUE]+"\n")
+EXAMPLE = IF_TRUE
 
-ssa_visitor = SSAVisitor()
-walk(IF_TRUE, ssa_visitor)
-linear_combo_ssa_node = ssa_visitor.ssa_node[IF_TRUE]
+linear_combo_ssa_node = ssa(EXAMPLE)
 
-#print_visitor_2 = ASTPrinter()
-#walk(linear_combo_ssa_node, print_visitor_2)
-#print(print_visitor_2.str_repr[linear_combo_ssa_node]+"\n")
+# print_visitor_2 = ASTPrinter()
+# walk(linear_combo_ssa_node, print_visitor_2)
 
 constraint_visitor = ConstraintVisitor()
 walk(linear_combo_ssa_node, constraint_visitor)

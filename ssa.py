@@ -108,3 +108,43 @@ class SSAVisitor(Visitor):
                 self.definition_counter[node.name] - 1))
         else:
             self.ssa_node[node] = node
+
+class FlattenVisitor(Visitor):
+    def __init__(self):
+        self.flat_node = {}
+
+    def visit(self, node, is_leaving):
+        if not is_leaving:
+            self.flat_node[node] = node
+            return
+
+        if isinstance(node, Node) and node.kind == NT.STMTLIST:
+            children = []
+
+            for a in node.args:
+                c = self.flat_node[a]
+
+                if c.kind == NT.STMTLIST:
+                    children.extend(c.args)
+                else:
+                    children.append(c)
+
+            self.flat_node[node] = Node(node.kind, children)
+        elif isinstance(node, Node):
+            children = []
+
+            for a in node.args:
+                children.append(self.flat_node[a])
+
+            self.flat_node[node] = Node(node.kind, children)
+
+    @staticmethod
+    def flatten(node):
+        v = FlattenVisitor()
+        walk(node, v)
+        return v.flat_node[node]
+
+def ssa(node):
+    v = SSAVisitor()
+    walk(node, v)
+    return FlattenVisitor.flatten(v.ssa_node[node])
