@@ -28,8 +28,8 @@ print_node(Parser.parse_string(LINEAR_COMBINATION_PROGRAM))
 
 IF_TRUE_PROGRAM = """
     function (x, y) {
-        if (?0n) {x = y;  };
-        assert BVComp.BVEQ x y;
+        if (?0b) {x := y;  };
+        assert == x y;
     }
 """
 print_node(Parser.parse_string(IF_TRUE_PROGRAM))

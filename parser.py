@@ -278,7 +278,7 @@ class Parser:
             expr2 = self.parse_bv_expression()
             return Node(NT.BOOLEXPR, [bvcomp, expr1, expr2])
 
-        if self.lookahead() == TokenType.BOOLHOLE:
+        if self.lookahead() == TokenType.BOOLEAN_HOLE:
             return Node(NT.BOOLEXPR, [self.parse_boolhole()])
 
         self.raise_error()
@@ -291,7 +291,7 @@ class Parser:
         then_body = self.parse_statement_list()
 
         if self.lookahead() == TokenType.KW_ELSE:
-            self.consume(TokenType.TokenType.KW_ELSE)
+            self.consume(TokenType.KW_ELSE)
             else_body = self.parse_statement_list()
             return Node(NT.IF, [condition, then_body, else_body])
         else:
