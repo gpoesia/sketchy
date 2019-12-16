@@ -1,10 +1,9 @@
 from ssa import *
+from parser import *
 from examples import *
 
-EXAMPLE = IF_TRUE_ELSE_NOTHING
+EXAMPLE = Parser.parse_string(IF_TRUE_ELSE_NOTHING)
 
 ssa_visitor = SSAVisitor()
 walk(EXAMPLE, ssa_visitor)
-p = ASTPrinter()
-walk(ssa_visitor.ssa_node[EXAMPLE], p)
-print(p.str_repr[ssa_visitor.ssa_node[EXAMPLE]])
+print_node(ssa_visitor)

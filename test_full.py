@@ -1,11 +1,13 @@
 from translate import *
 from ssa import *
+from parser import *
 from constraints import *
 from examples import *
 import subprocess
 
 for EXAMPLE in [LINEAR_COMBINATION, IF_TRUE, IF_FALSE, IF_TRUE_ELSE_NOTHING]:
-    ssa_node = ssa(EXAMPLE)
+    example_node = Parser.parse_string(EXAMPLE)
+    ssa_node = ssa(example_node)
     # print_visitor = ASTPrinter()
     # walk(ssa_node, print_visitor)
     # print(print_visitor.str_repr[ssa_node])
