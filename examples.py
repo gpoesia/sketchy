@@ -34,7 +34,26 @@ IF_TRUE_ELSE_NOTHING = """
         assert == x y;
     }
 """
-EXAMPLES = [LINEAR_COMBINATION, IF_TRUE, IF_FALSE, IF_TRUE_ELSE_NOTHING]
+
+POPCOUNT = """
+    function (x) {
+        c_naive := 0;
+        for (i from 0 to 32) {
+            if (not == 0 (& (<< 1 i) x)) {
+                c_naive := + 1 c_naive;
+            };
+        };
+        c := x;
+        c := + (& c ?1n) (& (>> c 1) ?1n);
+        c := + (& c ?2n) (& (>> c 2) ?2n);
+        c := + (& c ?3n) (& (>> c 4) ?3n);
+        c := + (& c ?4n) (& (>> c 8) ?4n);
+        c := + (& c ?5n) (& (>> c 16) ?5n);
+        assert == c c_naive;
+    }
+"""
+
+EXAMPLES = [LINEAR_COMBINATION, IF_TRUE, IF_FALSE, IF_TRUE_ELSE_NOTHING, POPCOUNT]
 
 #LINEAR_COMBINATION = Node(NT.FUNCTION, [
 #    Node(NT.PARAMLIST, [Name("x"), Name("y")]),

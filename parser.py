@@ -307,7 +307,7 @@ class Parser:
         right_limit = self.consume(TokenType.NUMBER)
         self.consume(TokenType.CLOSE_PARENTHESIS)
         stmts = self.parse_statement_list()
-        return Node(NT.FOR, name, BVLit(left_limit), BVLit(right_limit), stmts)
+        return Node(NT.FOR, [name, BVLit(left_limit), BVLit(right_limit), stmts])
 
     def parse_assertion(self):
         self.consume(TokenType.KW_ASSERT)

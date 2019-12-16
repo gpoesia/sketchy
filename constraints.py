@@ -1,16 +1,25 @@
 from translate import *
 
+BITVECTOR_SIZE = 16
+
 class ConstraintVisitor(Visitor):
     def __init__(self):
         self.constraint_str = {}
         self.bool_hole_vars = set()
         self.bv_hole_vars = set()
+
+    def format_literal(self, n):
+        b = bin(n)[2:]
+        while len(b) < BITVECTOR_SIZE:
+            b = '0' + b
+        return '#b' + b
+
     def createHoleConstraints(self):
         s = ""
         for v in self.bool_hole_vars:
             s += "(declare-const "+v+" Bool)\n"
         for v in self.bv_hole_vars:
-            s += "(declare-const "+v+" (_ BitVec 32))\n"
+            s += "(declare-const "+v+" (_ BitVec {}))\n".format(BITVECTOR_SIZE)
         return s
     def outputConstraints(self, node):
         return ("(set-logic UFBV)\n" +
@@ -26,7 +35,7 @@ class ConstraintVisitor(Visitor):
                         self.constraint_str[node.args[0]]+")" +
                         self.constraint_str[node.args[1]]+"))")
             elif (node.kind == NT.PARAMLIST):
-                self.constraint_str[node] = "\n".join(["("+x.name+" (_ BitVec 32))" for x in node.args])
+                self.constraint_str[node] = "\n".join(["("+x.name+" (_ BitVec {}))".format(BITVECTOR_SIZE) for x in node.args])
             elif (node.kind == NT.STMTLIST): #STMTLIST = [(ASSIGNMENT + ASSERTION)]
                 self.constraint_str[node] = (
                     "\n"+"\n".join([self.constraint_str[x] for x in node.args])
@@ -43,7 +52,7 @@ class ConstraintVisitor(Visitor):
                 if (isinstance(node.args[0], Name)):
                     self.constraint_str[node] = node.args[0].name
                 elif (isinstance(node.args[0], BVLit)):
-                    self.constraint_str[node] = node.args[0].bvlit
+                    self.constraint_str[node] = self.format_literal(node.args[0].bvlit)
                 elif isinstance(node.args[0], BVOp1):
                     operation_symbol = node.args[0].name.lower()
                     self.constraint_str[node] = (

@@ -63,7 +63,7 @@ class SSAVisitor(Visitor):
                     phis.append(Node(NT.ASSIGNMENT, [
                         Name(phi_name),
                         Node(NT.PHI, [
-                            node.args[0],
+                            self.ssa_node[node.args[0]],
                             Name(then_name),
                             Name(else_name),
                         ])
@@ -145,6 +145,9 @@ class FlattenVisitor(Visitor):
         return v.flat_node[node]
 
 def ssa(node):
+    unroller = ASTUnroller()
+    walk(node, unroller)
+    node = unroller.unrolled_node[node]
     v = SSAVisitor()
     walk(node, v)
     return FlattenVisitor.flatten(v.ssa_node[node])
