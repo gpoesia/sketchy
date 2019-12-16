@@ -238,10 +238,10 @@ class Parser:
             return Node(NT.BVEXPR, [bvop2, expr1, expr2])
 
         if self.lookahead() == TokenType.NAME:
-            return Node(NT.BVEXPR, [self.consume(TokenType.NAME)])
+            return Node(NT.BVEXPR, [Name(self.consume(TokenType.NAME))])
 
         if self.lookahead() == TokenType.NUMBER:
-            return Node(NT.BVEXPR, [self.consume(TokenType.NUMBER)])
+            return Node(NT.BVEXPR, [BVLit(self.consume(TokenType.NUMBER))])
 
         if self.lookahead() == TokenType.NUMBER_HOLE:
             return Node(NT.BVEXPR, [self.parse_bv_hole()])
