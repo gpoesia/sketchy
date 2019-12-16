@@ -23,5 +23,31 @@ LINEAR_COMBINATION_PROGRAM = """
 """
 
 #print(Tokenizer.tokenize(LINEAR_COMBINATION_PROGRAM))
-print(Parser.parse_string(LINEAR_COMBINATION_PROGRAM))
+#print(Parser.parse_string(LINEAR_COMBINATION_PROGRAM))
 print_node(Parser.parse_string(LINEAR_COMBINATION_PROGRAM))
+
+IF_TRUE_PROGRAM = """
+    function (x, y) {
+        if (?0n) {x = y;  };
+        assert BVComp.BVEQ x y;
+    }
+"""
+print_node(Parser.parse_string(IF_TRUE_PROGRAM))
+
+IF_FALSE_PROGRAM = """
+    function (x, y) {
+        x_old := x;
+        if (?0b) {x := y;  };
+        assert == x x_old;
+    }
+"""
+print_node(Parser.parse_string(IF_FALSE_PROGRAM))
+
+IF_TRUE_ELSE_NOTHING = """
+    function (x, y) {
+        if (?0b) {x := y;  } else { x := x; };
+        assert == x y;
+    }
+"""
+
+print_node(Parser.parse_string(IF_TRUE_ELSE_NOTHING))
