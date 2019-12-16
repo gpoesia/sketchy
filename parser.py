@@ -206,7 +206,7 @@ class Parser:
 
         while self.lookahead() != TokenType.CLOSE_PARENTHESIS:
             self.consume(TokenType.COMMA, optional=True)
-            paramlist.args.append(self.consume(TokenType.NAME))
+            paramlist.args.append(Name(self.consume(TokenType.NAME)))
 
         self.consume(TokenType.CLOSE_PARENTHESIS)
         stmtlist = self.parse_statement_list()
@@ -300,7 +300,7 @@ class Parser:
     def parse_for(self):
         self.consume(TokenType.KW_FOR)
         self.consume(TokenType.OPEN_PARENTHESIS)
-        name = self.consume(TokenType.NAME)
+        name = Name(self.consume(TokenType.NAME))
         self.consume(TokenType.KW_FROM)
         left_limit = self.consume(TokenType.NUMBER)
         self.consume(TokenType.KW_TO)
@@ -332,7 +332,7 @@ class Parser:
         return Node(NT.BOOLHOLE, [self.consume(TokenType.BOOLEAN_HOLE)])
 
     def parse_assignment(self):
-        name = self.consume(TokenType.NAME)
+        name = Name(self.consume(TokenType.NAME))
         self.consume(TokenType.ASSIGNMENT)
         expr = self.parse_bv_expression()
         return Node(NT.ASSIGNMENT, [name, expr])
