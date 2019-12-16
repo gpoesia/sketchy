@@ -1,5 +1,4 @@
 from translate import *
-from printer import *
 from ssa import *
 from constraints import *
 from examples import *
