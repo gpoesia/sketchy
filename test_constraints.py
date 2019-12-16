@@ -4,12 +4,13 @@ from constraints import *
 from examples import *
 import subprocess
 
-EXAMPLE = IF_TRUE
+EXAMPLE = LINEAR_COMBINATION
 
 ssa_node = ssa(EXAMPLE)
 
-# print_visitor_2 = ASTPrinter()
-# walk(ssa_node, print_visitor_2)
+#print_visitor_2 = ASTPrinter()
+#walk(ssa_node, print_visitor_2)
+#print(print_visitor_2.str_repr[ssa_node])
 
 constraint_visitor = ConstraintVisitor()
 walk(ssa_node, constraint_visitor)
