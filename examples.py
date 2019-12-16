@@ -2,7 +2,7 @@ from translate import *
 from ssa import *
 from constraints import *
 
-LINEAR_COMBINATION_PROGRAM = """
+LINEAR_COMBINATION = """
     function (x, y) {
         x_old := x;
         x := + x y;
@@ -13,14 +13,14 @@ LINEAR_COMBINATION_PROGRAM = """
     }
 """
 
-IF_TRUE_PROGRAM = """
+IF_TRUE = """
     function (x, y) {
         if (?0b) {x := y;  };
         assert == x y;
     }
 """
 
-IF_FALSE_PROGRAM = """
+IF_FALSE = """
     function (x, y) {
         x_old := x;
         if (?0b) {x := y;  };
