@@ -1,6 +1,6 @@
 from translate import *
 
-BITVECTOR_SIZE = 16
+BITVECTOR_SIZE = 32
 
 class ConstraintVisitor(Visitor):
     def __init__(self):
