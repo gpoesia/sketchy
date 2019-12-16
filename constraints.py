@@ -77,13 +77,13 @@ class ConstraintVisitor(Visitor):
                         self.constraint_str[node.args[1]] + " " +
                         self.constraint_str[node.args[2]]+")")
                 elif isinstance(node.args[0], Node) and node.args[0].kind == NT.BOOLHOLE:
-                    self.constraint_str[node] = "hole_"+self.constraint_str[node.args[0]]
+                    self.constraint_str[node] = self.constraint_str[node.args[0]]
             elif (node.kind == NT.PHI):
                 self.constraint_str[node] = (
                     "(ite "+
                     self.constraint_str[node.args[0]]+" "+
-                    node.args[1]+" "+
-                    node.args[2]+")")
+                    node.args[1].name+" "+
+                    node.args[2].name+")")
             elif (node.kind == NT.BVHOLE):
                 hole_name = "hole_"+str(node.args[0])
                 self.constraint_str[node] = hole_name

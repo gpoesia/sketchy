@@ -4,7 +4,7 @@
 (y_0 (_ BitVec 32)))
 
 (let ((x_1 y_0))
-(let ((x_2 ite hole_hole_0 x_1 x_0))))
+(let ((x_2 (ite hole_0 x_1 x_0)))))
 (= x_2 y_0)))
 (check-sat)
 (get-model)

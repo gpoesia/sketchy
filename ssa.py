@@ -64,8 +64,8 @@ class SSAVisitor(Visitor):
                         Name(phi_name),
                         Node(NT.PHI, [
                             node.args[0],
-                            then_name,
-                            else_name,
+                            Name(then_name),
+                            Name(else_name),
                         ])
                     ]))
 
