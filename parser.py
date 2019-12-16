@@ -226,6 +226,12 @@ class Parser:
         return Node(NT.STMTLIST, stmts)
 
     def parse_bv_expression(self):
+        if self.lookahead() == TokenType.OPEN_PARENTHESIS:
+            self.consume(TokenType.OPEN_PARENTHESIS)
+            e = self.parse_bv_expression()
+            self.consume(TokenType.CLOSE_PARENTHESIS)
+            return e
+
         if self.lookahead_has_prop('bvop1'):
             bvop1 = self.consume(prop='bvop1')
             expr = self.parse_bv_expression()
@@ -249,6 +255,12 @@ class Parser:
         self.raise_error()
 
     def parse_boolean_expression(self):
+        if self.lookahead() == TokenType.OPEN_PARENTHESIS:
+            self.consume(TokenType.OPEN_PARENTHESIS)
+            e = self.parse_boolean_expression()
+            self.consume(TokenType.CLOSE_PARENTHESIS)
+            return e
+
         if self.lookahead_has_prop('boolop1'):
             boolop1 = self.consume(prop='boolop1')
             expr = self.parse_boolean_expression()
