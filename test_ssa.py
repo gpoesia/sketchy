@@ -2,8 +2,8 @@ from ssa import *
 from parser import *
 from examples import *
 
-EXAMPLE = Parser.parse_string(IF_TRUE_ELSE_NOTHING)
-
-ssa_visitor = SSAVisitor()
-walk(EXAMPLE, ssa_visitor)
-print_node(ssa_visitor)
+for prog in EXAMPLES:
+    example_node = Parser.parse_string(prog)
+    ssa_visitor = SSAVisitor()
+    walk(example_node, ssa_visitor)
+    print_node(ssa_visitor.ssa_node[example_node])
