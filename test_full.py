@@ -5,7 +5,7 @@ from constraints import *
 from examples import *
 import subprocess
 
-for EXAMPLE in [POPCOUNT]:  #[LINEAR_COMBINATION, IF_TRUE, IF_FALSE, IF_TRUE_ELSE_NOTHING]:
+for EXAMPLE in [POPCOUNT2]: # [POPCOUNT]:  #[LINEAR_COMBINATION, IF_TRUE, IF_FALSE, IF_TRUE_ELSE_NOTHING]:
     example_node = Parser.parse_string(EXAMPLE)
     ssa_node = ssa(example_node)
     print_node(ssa_node)

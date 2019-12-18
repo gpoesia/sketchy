@@ -4,7 +4,7 @@ class NT(Enum):
     FUNCTION = auto()   # [PARAMLIST, STMTLIST]
     STMTLIST = auto()   # [(ASSIGNMENT + ASSERTION + IF + FOR)+]
     PARAMLIST = auto()  # [(Name)+]
-    ASSIGNMENT = auto() # [Name, Nonterminal]
+    ASSIGNMENT = auto() # [Name, BVEXPR]
     ASSERTION = auto()  # [BOOLEXPR]
     IF = auto()         # [BoolExpr, STMTLIST, STMTLIST?]
     FOR = auto()        # [Name, BVLit, BVLit, STMTLIST]

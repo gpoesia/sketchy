@@ -53,7 +53,54 @@ POPCOUNT = """
     }
 """
 
-EXAMPLES = [LINEAR_COMBINATION, IF_TRUE, IF_FALSE, IF_TRUE_ELSE_NOTHING, POPCOUNT]
+def gen_popcount2(bw):
+    p = """
+    function (x) {{
+        c_naive := 0;
+        for (i from 0 to {}) {{
+            c_naive := + c_naive (>> (& x (<< 1 i)) i);
+        }};
+        c := x;
+        """.format(bw)
+    i = 0
+    while 2**i < bw:
+        p += """
+        c := + (& c ?{0}n) (& (>> c {1}) ?{0}n);
+        """.format(i, 2**i)
+        i += 1
+
+    p += """
+        assert == c c_naive;
+    }"""
+    return p
+
+def gen_reverse(bw):
+    p = """
+    function (x) {{
+        r_naive := 0;
+        for (i from 0 to {0}) {{
+            s := + 1 * 2 i;
+            r_naive := | r_naive (>> (& x (<< 1 (+ {0} i))) s);
+            r_naive := | r_naive (<< (& x (<< 1 (- {1} i))) s);
+        }};
+        r := x;
+    """.format(bw // 2, bw // 2 - 1)
+
+    i = 0
+    while 2**i < bw:
+        p += """
+        r := | (>> (& r ?{0}n) {1}) (<< (& r ?{2}n) {1});
+        """.format(2*i, 2**i, 2*i + 1)
+        i += 1
+    p += """
+        assert == r r_naive;
+    }"""
+    return p
+
+POPCOUNT2 = gen_popcount2(BITVECTOR_SIZE)
+REVERSE = gen_reverse(BITVECTOR_SIZE)
+
+EXAMPLES = [REVERSE, POPCOUNT2, LINEAR_COMBINATION, IF_TRUE, IF_FALSE, IF_TRUE_ELSE_NOTHING, POPCOUNT]
 
 #LINEAR_COMBINATION = Node(NT.FUNCTION, [
 #    Node(NT.PARAMLIST, [Name("x"), Name("y")]),
